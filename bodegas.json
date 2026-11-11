@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "servicio": "API Asignacion de Bodegas"
+  },
+  "bodegas": [
+    {
+      "id_bodega": "BOD-BOG-01",
+      "nombre": "Bodega Central Zona Industrial",
+      "ciudad": "Bogota",
+      "tipo_almacenamiento": "Repuestos",
+      "cupo_disponible": 500,
+      "estado": "Activa"
+    },
+    {
+      "id_bodega": "BOD-BOG-02",
+      "nombre": "Bodega Norte Autopista",
+      "ciudad": "Bogota",
+      "tipo_almacenamiento": "Vehiculos",
+      "cupo_disponible": 80,
+      "estado": "Activa"
+    },
+    {
+      "id_bodega": "BOD-MED-01",
+      "nombre": "Bodega Regional Antioquia",
+      "ciudad": "Medellin",
+      "tipo_almacenamiento": "Repuestos",
+      "cupo_disponible": 300,
+      "estado": "Activa"
+    },
+    {
+      "id_bodega": "BOD-CAL-01",
+      "nombre": "Bodega Pacifico Yumbo",
+      "ciudad": "Cali",
+      "tipo_almacenamiento": "Repuestos",
+      "cupo_disponible": 250,
+      "estado": "Activa"
+    }
+  ]
+}
