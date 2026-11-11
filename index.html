@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>SIGRUWEB - Simulador Autorización Transacción Factura</title>
+  <title>SIGRUWEB - CRM Autorización Transacción Factura</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
     body { background: #fff; color: #333; overflow-x: hidden; }
@@ -14,11 +14,11 @@
     .collapse-btn { background: #f5b800; color: #2c256e; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
     .topbar-right { font-size: 11px; text-align: right; line-height: 1.3; }
     
-    /* Contenedor Principal */
+    /* Estructura Principal */
     .layout { display: flex; min-height: calc(100vh - 46px); }
     
     /* Menú Lateral Izquierdo */
-    .sidebar { width: 205px; border-right: 1px solid #ddd; background: #fff; padding-top: 8px; select-user: none; }
+    .sidebar { width: 205px; border-right: 1px solid #ddd; background: #fff; padding-top: 8px; user-select: none; }
     .menu-item { padding: 9px 14px; color: #333; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f7f7f7; }
     .menu-item:hover { background: #f0f2f8; }
     .menu-item.active-parent { color: #2c256e; font-weight: bold; background: #f5f6fa; }
@@ -27,7 +27,7 @@
     .submenu-item { padding: 8px 14px 8px 22px; color: #333; cursor: pointer; border-bottom: 1px solid #e0e0e0; }
     .submenu-item:hover, .submenu-item.active { background: #dcdcdc; font-weight: bold; }
 
-    /* Área de Trabajo Central */
+    /* Área Central */
     .workspace { flex: 1; padding: 10px 16px; background: #fff; position: relative; }
     .tabs { display: flex; gap: 4px; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 8px; }
     .tab { padding: 5px 10px; border: 1px solid #ccc; background: #f4f4f4; border-radius: 3px 3px 0 0; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
@@ -36,45 +36,52 @@
 
     /* Vista Home */
     #vistaHome { display: flex; justify-content: center; align-items: center; height: 75vh; }
-    .banner-adelante { border: 6px solid #2c256e; width: 620px; height: 270px; display: flex; align-items: center; justify-content: center; position: relative; background: #fff; }
+    .banner-adelante { border: 6px solid #2c256e; width: 620px; height: 270px; display: flex; align-items: center; justify-content: center; background: #fff; }
     .franja-amarilla { background: #f8f000; width: 100%; height: 120px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #222; }
     .franja-amarilla strong { font-size: 48px; margin-left: 10px; font-weight: 800; }
 
-    /* Vista Opción 114 */
+    /* Vista Autorización Opción 114 */
     #vistaAutorizacion { display: none; }
     .breadcrumb-bar { display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0 8px 0; border-bottom: 1px solid #ccc; margin-bottom: 10px; }
     .section-box { border: 1px solid #e0e0e0; padding: 10px 12px; margin-bottom: 12px; border-radius: 3px; }
     .section-title { display: flex; align-items: center; gap: 8px; color: #2c256e; font-weight: bold; margin-bottom: 12px; }
     .minus-circle { background: #2c256e; color: #fff; border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; }
     
-    .filters-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
+    .filters-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-bottom: 12px; }
     .filter-group { display: flex; align-items: center; gap: 6px; }
     .filter-group label { font-weight: bold; font-size: 11px; }
-    .filter-group select, .filter-group input { border: none; border-bottom: 1px solid #888; padding: 3px 6px; outline: none; font-size: 11px; min-width: 110px; }
+    .filter-group select, .filter-group input { border: none; border-bottom: 1px solid #888; padding: 3px 6px; outline: none; font-size: 11px; min-width: 120px; }
 
     .btn-yellow { background: #f5b800; color: #222; border: 1px solid #d9a300; padding: 6px 14px; border-radius: 3px; font-weight: bold; cursor: pointer; font-size: 11px; display: inline-flex; align-items: center; gap: 5px; }
     .btn-yellow:hover { background: #e0a800; }
+    .excel-icon { background: #1d6f42; color: #fff; font-weight: bold; padding: 4px 7px; border-radius: 3px; font-size: 11px; margin-left: 6px; display: inline-block; }
 
-    /* Tabla de Resultados */
+    /* Tabla de Datos Almacenados */
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th { background: #f2f2f2; border: 1px solid #ddd; padding: 7px; text-align: center; font-size: 11px; font-weight: bold; }
+    th { background: #f2f2f2; border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 11px; font-weight: bold; }
     td { border: 1px solid #e5e5e5; padding: 6px 10px; font-size: 11px; color: #444; }
     tr:nth-child(even) { background: #fafafa; }
+    tr.nuevo-registro { background: #e8f5e9 !important; font-weight: bold; transition: background 0.5s; }
 
-    /* Modal Administracion Referencias Unidad de Empaque */
+    /* Ventana Modal Exacta a SIGRUWEB */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.45); justify-content: center; align-items: center; z-index: 1000; }
     .modal-overlay.active { display: flex; }
-    .modal-window { background: #fff; width: 320px; border-radius: 3px; box-shadow: 0 4px 20px rgba(0,0,0,0.35); overflow: hidden; }
+    .modal-window { background: #fff; width: 325px; border-radius: 3px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); overflow: hidden; }
     .modal-header { background: #2c256e; color: #fff; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 11px; }
     .modal-close { cursor: pointer; font-size: 13px; font-weight: bold; }
     .modal-body { padding: 12px; }
-    .modal-row { background: #f5f5f5; padding: 7px 8px; margin-bottom: 4px; border-bottom: 1px solid #eaeaea; }
-    .modal-row label { display: block; font-weight: bold; font-size: 11px; margin-bottom: 4px; color: #222; }
-    .modal-row select, .modal-row input { width: 100%; border: none; border-bottom: 1px solid #999; background: transparent; padding: 3px 2px; font-size: 11px; outline: none; }
+    .modal-row { background: #f5f5f5; padding: 8px 10px; margin-bottom: 6px; border-bottom: 1px solid #eaeaea; }
+    .modal-row label { display: block; font-weight: bold; font-size: 11px; margin-bottom: 5px; color: #111; }
+    .modal-row select, .modal-row input { width: 100%; border: none; border-bottom: 1px solid #888; background: transparent; padding: 4px 2px; font-size: 11px; outline: none; }
     .modal-footer { padding: 10px 12px; background: #fff; border-top: 1px solid #eee; }
 
-    /* Consola HTTP para Power Automate */
-    .http-bar { margin-top: 16px; background: #1e1e1e; color: #00ff9d; padding: 10px 14px; border-radius: 4px; font-family: Consolas, monospace; font-size: 11px; }
+    /* Barra Inferior de Diagnóstico y Simulación Teams/HTTP */
+    .http-bar { margin-top: 16px; background: #1e1e1e; color: #00ff9d; padding: 12px 14px; border-radius: 4px; font-family: Consolas, monospace; font-size: 11px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .http-actions { display: flex; gap: 8px; }
+    .btn-dark { background: #333; color: #fff; border: 1px solid #555; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px; }
+    .btn-dark:hover { background: #444; }
+    .btn-teams { background: #464775; color: #fff; border: 1px solid #6264a7; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: bold; }
+    .btn-teams:hover { background: #5b5fc7; }
   </style>
 </head>
 <body>
@@ -100,10 +107,8 @@
       <div class="menu-item">Anticipos Empleados <span>⌄</span></div>
       <div class="menu-item">COVID-19 <span>⌄</span></div>
       
-      <!-- PASO 1: Menú CRM -->
       <div class="menu-item" id="menuCRM" onclick="paso1AbrirCRM()">CRM <span>⌄</span></div>
       <div class="submenu" id="submenuCRM">
-        <!-- PASO 2: Submenú Autorizacion Transaccion Factura -->
         <div class="submenu-item" id="subAutorizacion" onclick="paso2AbrirAutorizacion()">Autorizacion Transaccion Factura</div>
         <div class="submenu-item">CRM</div>
         <div class="submenu-item">Consulta de Registro</div>
@@ -115,58 +120,69 @@
       <div class="menu-item">Citas Web <span>⌄</span></div>
       <div class="menu-item">Comisiones <span>⌄</span></div>
       <div class="menu-item">Compras <span>⌄</span></div>
+      <div class="menu-item">Equipo Como Servicio <span>⌄</span></div>
+      <div class="menu-item">Garantias V2 <span>⌄</span></div>
       <div class="menu-item">Gestión Logística <span>⌄</span></div>
       <div class="menu-item">Posventa <span>⌄</span></div>
       <div class="menu-item">Repuestos <span>⌄</span></div>
     </div>
 
-    <!-- Área Central -->
+    <!-- Área de Trabajo -->
     <div class="workspace">
       <div class="tabs" id="contenedorTabs">
-        <div class="tab active" id="tabHome" onclick="cambiarVista('home')">Home</div>
+        <div class="tab active" id="tabHome" onclick="mostrarHome()">Home</div>
       </div>
 
-      <!-- Pantalla Inicial (Imagen 1) -->
+      <!-- Vista Inicial -->
       <div id="vistaHome">
         <div class="banner-adelante">
           <div class="franja-amarilla">✌️ Vamos hacia <strong>Adelante</strong></div>
         </div>
       </div>
 
-      <!-- Pantalla Autorizacion Transaccion Factura (Imagen 2) -->
+      <!-- Vista Opción 114 -->
       <div id="vistaAutorizacion">
         <div class="breadcrumb-bar">
           <div><strong>Estás en :</strong> CRM &gt; Autorizacion Transaccion Factura. <strong>No Opción: 114</strong></div>
           <div><strong>Usuario:</strong> cmanrique</div>
         </div>
 
+        <!-- Filtros de Consulta Funcionales -->
         <div class="section-box">
           <div class="section-title"><span class="minus-circle">-</span> Consulta</div>
           <div class="filters-row">
             <div class="filter-group">
               <label>Mostrador/Taller</label>
-              <select id="filtroMostrador"><option value="">Seleccione</option><option value="MOSTRADOR">Mostrador</option><option value="TALLER">Taller</option></select>
+              <select id="filtroMostrador">
+                <option value="">Seleccione</option>
+                <option value="MOSTRADOR" selected>MOSTRADOR</option>
+                <option value="TALLER">TALLER</option>
+              </select>
             </div>
             <div class="filter-group">
               <label>Bodega</label>
-              <select id="filtroBodega"><option value="">Seleccione</option><option value="1 - BOG. CALLE 13">1 - BOG. CALLE 13</option><option value="2 - BOG. MORATO">2 - BOG. MORATO</option></select>
+              <input type="text" id="filtroBodega" placeholder="Seleccione o digite (Ej: 472)" />
             </div>
             <div class="filter-group">
               <label>Numero Pedido</label>
-              <input type="text" id="filtroPedido" />
+              <input type="text" id="filtroPedido" placeholder="Ej: 81853" />
             </div>
             <div class="filter-group">
               <label>Numero OT:</label>
               <input type="text" id="filtroOT" />
             </div>
           </div>
-          <button class="btn-yellow" id="btnConsultar">🔍 Consultar</button>
+          <button class="btn-yellow" id="btnConsultar" onclick="filtrarTabla()">🔍 Consultar</button>
+          <button class="btn-yellow" style="background:#eee; border-color:#ccc; margin-left:6px;" onclick="limpiarFiltros()">Mostrar Todos</button>
         </div>
 
+        <!-- Lista y Tabla Persistente -->
         <div class="section-box">
           <div style="color:#2c256e; font-weight:bold; margin-bottom:8px;">Lista</div>
-          <!-- PASO 3: Botón + Agregar -->
-          <button class="btn-yellow" id="btnAgregar" onclick="paso3AbrirModal()">+ Agregar</button>
+          <div style="display:flex; align-items:center; margin-bottom:8px;">
+            <button class="btn-yellow" id="btnAgregar" onclick="paso3AbrirModal()">+ Agregar</button>
+            <span class="excel-icon" title="Exportado / Almacenado en Base Local">X</span>
+          </div>
 
           <table id="tablaAutorizaciones">
             <thead>
@@ -178,60 +194,55 @@
                 <th>Estado</th>
               </tr>
             </thead>
-            <tbody id="cuerpoTabla">
-              <tr><td>1 - BOG. CALLE 13</td><td>785588</td><td>X</td><td>AUTORIZADO</td><td style="text-align:center;"><button class="btn-yellow">Inhabilitar</button></td></tr>
-              <tr><td>1 - BOG. CALLE 13</td><td>785722</td><td>X</td><td>AUTORIZADO</td><td style="text-align:center;"><button class="btn-yellow">Inhabilitar</button></td></tr>
-              <tr><td>1 - BOG. CALLE 13</td><td>785728</td><td>X</td><td>AUTORIZADO</td><td style="text-align:center;"><button class="btn-yellow">Inhabilitar</button></td></tr>
-              <tr><td>1 - BOG. CALLE 13</td><td>785738</td><td>X</td><td>AUTORIZADO</td><td style="text-align:center;"><button class="btn-yellow">Inhabilitar</button></td></tr>
-            </tbody>
+            <tbody id="cuerpoTabla"></tbody>
           </table>
         </div>
 
-        <!-- Registro HTTP en vivo para Power Automate -->
+        <!-- Barra de Auditoría HTTP / Integración Teams -->
         <div class="http-bar">
-          <div><strong>Última Transacción HTTP / Estado PAD:</strong></div>
-          <div id="salidaHttp">Esperando autorización en el modal...</div>
+          <div>
+            <div><strong>Base de Datos Local (localStorage) + Receptor HTTP:</strong></div>
+            <div id="salidaHttp">Sistema listo. Los registros se almacenan permanentemente en el navegador.</div>
+          </div>
+          <div class="http-actions">
+            <button class="btn-teams" onclick="simularMensajeTeams()">💬 Simular Chat Teams (Pedido 81853 / Bodega 472)</button>
+            <button class="btn-dark" onclick="reiniciarDatosPrueba()">🔄 Restaurar Datos Originales</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Ventana Modal (Imagen 3) -->
+  <!-- Ventana Modal Exacta: Mostrador -> Bodega -> No. Pedido -->
   <div class="modal-overlay" id="modalCrear">
     <div class="modal-window">
       <div class="modal-header">
         <span>Administracion Referencias Unidad de Empaque , Crear</span>
         <span class="modal-close" onclick="cerrarModal()">✕</span>
       </div>
-      <!-- PASO 4: Campos del Modal -->
       <div class="modal-body">
         <div class="modal-row">
           <label>Mostrador/Taller</label>
           <select id="modalMostrador">
-            <option value="">Seleccione</option>
-            <option value="MOSTRADOR">MOSTRADOR</option>
+            <option value="MOSTRADOR" selected>MOSTRADOR</option>
             <option value="TALLER">TALLER</option>
           </select>
         </div>
         <div class="modal-row">
           <label>Bodega</label>
-          <select id="modalBodega">
-            <option value="">Seleccione</option>
+          <input type="text" id="modalBodega" list="catalogoBodegas" placeholder="Seleccione" />
+          <datalist id="catalogoBodegas">
+            <option value="472">472 - BODEGA 472</option>
             <option value="1 - BOG. CALLE 13">1 - BOG. CALLE 13</option>
             <option value="2 - BOG. MORATO">2 - BOG. MORATO</option>
             <option value="3 - BOG. AUTOPISTA NORTE">3 - BOG. AUTOPISTA NORTE</option>
-          </select>
+          </datalist>
         </div>
         <div class="modal-row">
-          <label>Numero Pedido</label>
-          <input type="text" id="modalNumeroPedido" placeholder="Ej: 785901" />
-        </div>
-        <div class="modal-row">
-          <label>Numero OT</label>
-          <input type="text" id="modalNumeroOT" value="X" />
+          <label>No. Pedido</label>
+          <input type="text" id="modalNumeroPedido" placeholder="Ej: 81853" />
         </div>
       </div>
-      <!-- PASO 5: Botón Guardar -->
       <div class="modal-footer">
         <button class="btn-yellow" id="btnGuardar" onclick="paso5GuardarAutorizacion()">💾 Guardar</button>
       </div>
@@ -239,12 +250,59 @@
   </div>
 
   <script>
+    const STORAGE_KEY = 'sigruweb_db_autorizaciones_v2';
+
+    // Datos iniciales idénticos a tu pantalla real de SIGRUWEB
+    const datosIniciales = [
+      { mostrador: 'MOSTRADOR', bodega: '1 - BOG. CALLE 13', pedido: '785588', ot: 'X', estado: 'AUTORIZADO', nuevo: false },
+      { mostrador: 'MOSTRADOR', bodega: '1 - BOG. CALLE 13', pedido: '785722', ot: 'X', estado: 'AUTORIZADO', nuevo: false },
+      { mostrador: 'MOSTRADOR', bodega: '1 - BOG. CALLE 13', pedido: '785728', ot: 'X', estado: 'AUTORIZADO', nuevo: false },
+      { mostrador: 'MOSTRADOR', bodega: '1 - BOG. CALLE 13', pedido: '785738', ot: 'X', estado: 'AUTORIZADO', nuevo: false },
+      { mostrador: 'MOSTRADOR', bodega: '1 - BOG. CALLE 13', pedido: '785754', ot: 'X', estado: 'AUTORIZADO', nuevo: false },
+      { mostrador: 'MOSTRADOR', bodega: '1 - BOG. CALLE 13', pedido: '785767', ot: 'X', estado: 'AUTORIZADO', nuevo: false },
+      { mostrador: 'MOSTRADOR', bodega: '1 - BOG. CALLE 13', pedido: '785788', ot: 'X', estado: 'AUTORIZADO', nuevo: false },
+      { mostrador: 'MOSTRADOR', bodega: '1 - BOG. CALLE 13', pedido: '785789', ot: 'X', estado: 'AUTORIZADO', nuevo: false }
+    ];
+
+    function obtenerBaseDatos() {
+      const guardado = localStorage.getItem(STORAGE_KEY);
+      if (!guardado) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(datosIniciales));
+        return [...datosIniciales];
+      }
+      return JSON.parse(guardado);
+    }
+
+    function guardarBaseDatos(registros) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+    }
+
+    function renderizarTabla(lista = obtenerBaseDatos()) {
+      const tbody = document.getElementById('cuerpoTabla');
+      tbody.innerHTML = '';
+      lista.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        if (item.nuevo) tr.className = 'nuevo-registro';
+        tr.innerHTML = `
+          <td>${item.bodega}</td>
+          <td>${item.pedido}</td>
+          <td>${item.ot}</td>
+          <td>${item.estado}</td>
+          <td style="text-align:center;">
+            <button class="btn-yellow" onclick="inhabilitarRegistro('${item.pedido}')">Inhabilitar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
     function paso1AbrirCRM() {
-      document.getElementById('submenuCRM').classList.toggle('open');
+      document.getElementById('submenuCRM').classList.add('open');
       document.getElementById('menuCRM').classList.add('active-parent');
     }
 
     function paso2AbrirAutorizacion() {
+      paso1AbrirCRM();
       document.getElementById('subAutorizacion').classList.add('active');
       document.getElementById('vistaHome').style.display = 'none';
       document.getElementById('vistaAutorizacion').style.display = 'block';
@@ -257,9 +315,18 @@
         tab.innerHTML = 'Autorizacion Transaccion Factura <span class="tab-close">x</span>';
         document.getElementById('contenedorTabs').appendChild(tab);
       }
+      renderizarTabla();
+    }
+
+    function mostrarHome() {
+      document.getElementById('vistaHome').style.display = 'flex';
+      document.getElementById('vistaAutorizacion').style.display = 'none';
     }
 
     function paso3AbrirModal() {
+      document.getElementById('modalMostrador').value = 'MOSTRADOR';
+      document.getElementById('modalBodega').value = '';
+      document.getElementById('modalNumeroPedido').value = '';
       document.getElementById('modalCrear').classList.add('active');
     }
 
@@ -267,38 +334,94 @@
       document.getElementById('modalCrear').classList.remove('active');
     }
 
-    function paso5GuardarAutorizacion() {
-      const tipo = document.getElementById('modalMostrador').value || 'MOSTRADOR';
-      const bodega = document.getElementById('modalBodega').value || '1 - BOG. CALLE 13';
-      const pedido = document.getElementById('modalNumeroPedido').value || '785999';
-      const ot = document.getElementById('modalNumeroOT').value || 'X';
+    function paso5GuardarAutorizacion(origen = 'Interfaz / PAD') {
+      const mostrador = document.getElementById('modalMostrador').value || 'MOSTRADOR';
+      const bodegaRaw = document.getElementById('modalBodega').value.trim() || '472';
+      const pedido = document.getElementById('modalNumeroPedido').value.trim() || '81853';
 
-      const nuevaFila = document.createElement('tr');
-      nuevaFila.style.background = '#e8f5e9';
-      nuevaFila.innerHTML = `
-        <td>${bodega}</td>
-        <td>${pedido}</td>
-        <td>${ot}</td>
-        <td>AUTORIZADO</td>
-        <td style="text-align:center;"><button class="btn-yellow">Inhabilitar</button></td>
-      `;
-      const tbody = document.getElementById('cuerpoTabla');
-      tbody.insertBefore(nuevaFila, tbody.firstChild);
+      const nuevoRegistro = {
+        mostrador: mostrador,
+        bodega: bodegaRaw,
+        pedido: pedido,
+        ot: 'X',
+        estado: 'AUTORIZADO',
+        nuevo: true
+      };
 
-      const payload = {
+      const db = obtenerBaseDatos().map(r => ({ ...r, nuevo: false }));
+      db.unshift(nuevoRegistro);
+      guardarBaseDatos(db);
+      renderizarTabla(db);
+
+      const respuestaHttp = {
         status_http: 200,
-        modulo: "CRM > Autorizacion Transaccion Factura (Opcion 114)",
-        mostrador_taller: tipo,
-        bodega: bodega,
-        numero_pedido: pedido,
-        numero_ot: ot,
-        estado_final: "AUTORIZADO",
+        origen: origen,
+        mostrador_taller: mostrador,
+        bodega: bodegaRaw,
+        no_pedido: pedido,
+        estado: 'AUTORIZADO',
+        almacenado_en_db: true,
         timestamp: new Date().toISOString()
       };
 
-      document.getElementById('salidaHttp').textContent = JSON.stringify(payload);
+      document.getElementById('salidaHttp').textContent = JSON.stringify(respuestaHttp);
       cerrarModal();
+      return JSON.stringify(respuestaHttp);
     }
+
+    function filtrarTabla() {
+      const fBodega = document.getElementById('filtroBodega').value.trim().toLowerCase();
+      const fPedido = document.getElementById('filtroPedido').value.trim().toLowerCase();
+      const db = obtenerBaseDatos();
+      const filtrados = db.filter(item => {
+        const coincideBodega = !fBodega || item.bodega.toLowerCase().includes(fBodega);
+        const coincidePedido = !fPedido || item.pedido.toLowerCase().includes(fPedido);
+        return coincideBodega && coincidePedido;
+      });
+      renderizarTabla(filtrados);
+    }
+
+    function limpiarFiltros() {
+      document.getElementById('filtroBodega').value = '';
+      document.getElementById('filtroPedido').value = '';
+      renderizarTabla();
+    }
+
+    function inhabilitarRegistro(pedidoId) {
+      const db = obtenerBaseDatos().filter(item => item.pedido !== pedidoId);
+      guardarBaseDatos(db);
+      renderizarTabla(db);
+    }
+
+    function reiniciarDatosPrueba() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(datosIniciales));
+      renderizarTabla(datosIniciales);
+      document.getElementById('salidaHttp').textContent = 'Base de datos restaurada a los 8 pedidos iniciales.';
+    }
+
+    function simularMensajeTeams() {
+      paso2AbrirAutorizacion();
+      document.getElementById('modalMostrador').value = 'MOSTRADOR';
+      document.getElementById('modalBodega').value = '472';
+      document.getElementById('modalNumeroPedido').value = '81853';
+      paso5GuardarAutorizacion('Microsoft Teams Chat -> HTTP');
+    }
+
+    // Receptor automático por URL (Permite autorizar directo por HTTP sin hacer los 5 pasos)
+    window.addEventListener('DOMContentLoaded', () => {
+      renderizarTabla();
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('pedido') || params.get('directo') === 'true') {
+        paso2AbrirAutorizacion();
+        document.getElementById('modalMostrador').value = params.get('mostrador') || 'MOSTRADOR';
+        document.getElementById('modalBodega').value = params.get('bodega') || '472';
+        document.getElementById('modalNumeroPedido').value = params.get('pedido') || '81853';
+        paso5GuardarAutorizacion('Servicio HTTP Directo (Teams / Power Automate)');
+      }
+    });
+  </script>
+</body>
+</html>
   </script>
 </body>
 </html>
