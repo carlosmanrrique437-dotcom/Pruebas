@@ -1,0 +1,90 @@
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Asignación de Bodega - Conector HTTP Power Automate</title>
+  <style>
+    body { font-family: Segoe UI, sans-serif; max-width: 680px; margin: 30px auto; padding: 20px; background: #f4f6f9; }
+    .card { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .step { margin-bottom: 16px; padding: 12px; border-left: 4px solid #0066ff; background: #f8faff; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; }
+    input, select, button { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    button { background: #0066ff; color: #fff; font-weight: 600; border: none; cursor: pointer; margin-top: 12px; padding: 12px; }
+    button:hover { background: #0052cc; }
+    pre { background: #1e1e1e; color: #00ff9d; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Asignación de Bodega en 5 Pasos (HTTP)</h2>
+
+    <div class="step">
+      <label>Paso 1: Identificación de la Orden / Referencia</label>
+      <input type="text" id="ordenId" value="OT-2026-9841" />
+    </div>
+
+    <div class="step">
+      <label>Paso 2: Ciudad de Destino</label>
+      <select id="ciudad">
+        <option value="Bogota">Bogotá</option>
+        <option value="Medellin">Medellín</option>
+        <option value="Cali">Cali</option>
+      </select>
+    </div>
+
+    <div class="step">
+      <label>Paso 3: Tipo de Material</label>
+      <select id="tipoMaterial">
+        <option value="Repuestos">Repuestos</option>
+        <option value="Vehiculos">Vehículos</option>
+      </select>
+    </div>
+
+    <div class="step">
+      <label>Paso 4: Cantidad de Unidades a Reservar</label>
+      <input type="number" id="cantidad" value="25" min="1" />
+    </div>
+
+    <div class="step">
+      <label>Paso 5: Endpoint HTTP de Power Automate (Opcional para POST directo)</label>
+      <input type="url" id="webhookUrl" placeholder="https://prod-xx.westus.logic.azure.com:443/workflows/..." />
+      <button onclick="procesarAsignacion()">Ejecutar y Generar Payload HTTP</button>
+    </div>
+
+    <h4>Payload HTTP capturable por Power Automate:</h4>
+    <pre id="resultadoJson">Esperando ejecución...</pre>
+  </div>
+
+  <script>
+    async function procesarAsignacion() {
+      const payload = {
+        paso_1_orden: document.getElementById('ordenId').value,
+        paso_2_ciudad: document.getElementById('ciudad').value,
+        paso_3_material: document.getElementById('tipoMaterial').value,
+        paso_4_cantidad: Number(document.getElementById('cantidad').value),
+        paso_5_timestamp: new Date().toISOString()
+      };
+
+      const webhookUrl = document.getElementById('webhookUrl').value.trim();
+      const salida = document.getElementById('resultadoJson');
+
+      if (webhookUrl) {
+        try {
+          salida.textContent = "Enviando petición HTTP POST a Power Automate...";
+          const res = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.text();
+          salida.textContent = "HTTP Status: " + res.status + "\nRespuesta de Power Automate:\n" + data;
+        } catch (err) {
+          salida.textContent = "Error al enviar al Webhook: " + err.message + "\n\nPayload generado:\n" + JSON.stringify(payload, null, 2);
+        }
+      } else {
+        salida.textContent = JSON.stringify(payload, null, 2);
+      }
+    }
+  </script>
+</body>
+</html>
